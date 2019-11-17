@@ -7,93 +7,125 @@ services:
     build: .
     ports:
       - "5001:5000"
+    volumes:
+      - .:/code
   moscow:
     environment:
       - CITY=moscow
     build: .
     ports:
       - "5002:5000"
+    volumes:
+      - .:/code
   vaasa:
     environment:
       - CITY=vaasa
     build: .
     ports:
       - "5003:5000"
+    volumes:
+      - .:/code
   dublin:
     environment:
       - CITY=dublin
     build: .
     ports:
       - "5004:5000"
+    volumes:
+      - .:/code
   quito:
     environment:
       - CITY=quito
     build: .
     ports:
       - "5005:5000"
+    volumes:
+      - .:/code
   vancouver:
     environment:
       - CITY=vancouver
     build: .
     ports:
       - "5006:5000"
+    volumes:
+      - .:/code
   lima:
     environment:
       - CITY=lima
     build: .
     ports:
       - "5007:5000"
+    volumes:
+      - .:/code
   shanghai:
     environment:
       - CITY=shanghai
     build: .
     ports:
       - "5008:5000"
+    volumes:
+      - .:/code
   newcastle:
     environment:
       - CITY=newcastle
     build: .
     ports:
       - "5009:5000"
+    volumes:
+      - .:/code
   perth:
     environment:
       - CITY=perth
     build: .
     ports:
       - "5010:5000"
+    volumes:
+      - .:/code
   ouagadougou:
     environment:
       - CITY=ouagadougou
     build: .
     ports:
       - "5011:5000"
+    volumes:
+      - .:/code
   shenzhen:
     environment:
       - CITY=shenzhen
     build: .
     ports:
       - "5012:5000"
+    volumes:
+      - .:/code
   pyongyang:
     environment:
       - CITY=pyongyang
     build: .
     ports:
       - "5013:5000"
+    volumes:
+      - .:/code
   longyearbyen:
     environment:
       - CITY=longyearbyen
     build: .
     ports:
       - "5014:5000"
+    volumes:
+      - .:/code
   capetown:
     environment:
       - CITY=capetown
     build: .
     ports:
       - "5015:5000"
+    volumes:
+      - .:/code
   almaty:
     environment:
       - CITY=almaty
     build: .
     ports:
       - "5016:5000"
+    volumes:
+      - .:/code

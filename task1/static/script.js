@@ -1,35 +1,47 @@
-let waiting = false
-
 function load_data() {
-    let url = '/currenttemp'
-    $.ajax({ url: url,
-            success: function(data) {
-                display_data(data);
-                wait_for_update();
-            },
-    });
-    return true
-}
-
-function wait_for_update() {
-    if (!waiting) {
-        waiting = true;
-        $.ajax({ url: '/updated',
-                success: load_data,
-                complete: function() {
-                    waiting = false;
-                    wait_for_update();
-                },
-                timeout: 10000,
-                });
+  // Latest measurement of self
+  $.ajax({
+    url: "/api/currentTemp",
+    success: function(data) {
+      display_self_current(data);
     }
+  });
+  // History of self
+  $.ajax({
+    url: "/api/selfWeatherHistory",
+    success: function(data) {
+      display_self_history(data);
+    }
+  });
+  // History of others
+  $.ajax({
+    url: "/api/othersWeatherHistory",
+    success: function(data) {
+      display_other_history(data);
+    }
+  });
+
+  return true;
 }
 
-function display_data(data) {
-    $('div#contents').html(data.contents);
+function display_self_current(data) {
+  $("#city").html(data.city);
+  $("#currentTemp").html(data.celsius);
+}
+
+function display_self_history(data) {
+  // TODO: prettier display somehow?
+  $("#selfWeatherHistory").text(JSON.stringify(data, null, 2));
+}
+
+function display_other_history(data) {
+  // TODO: prettier display somehow?
+  $("#othersWeatherHistory").text(JSON.stringify(data, null, 2));
 }
 
 $(document).ready(function() {
-    $('div#contents').append('loading data');
+  // Refresh page info once a second
+  setInterval(function() {
     load_data();
+  }, 1000);
 });

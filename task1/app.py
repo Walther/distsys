@@ -54,8 +54,7 @@ def create_temp_update():
         'timestamp': timestamp
     }
     self_weather_history.append(measurement)
-    if len(self_weather_history) > his_length:
-        self_weather_history = self_weather_history[-his_length:]
+    
 
 
 # Tries to fetch the weather history from other nodes
@@ -74,8 +73,6 @@ def fetch_history_from_other_nodes():
             # https://stackoverflow.com/a/11092590/3709997
             others_weather_history = list(
                 {v['uuid']: v for v in combined}.values())
-            if len(others_weather_history) > his_length:
-                others_weather_history = others_weather_history[-his_length:]
         except Exception as e:
             print("Could not load data from {} - {}".format(port, e))
 
@@ -87,12 +84,20 @@ def get_current_temp():
 
 @app.route('/api/selfWeatherHistory')
 def get_self_weather_history():
-    return jsonify(self_weather_history)
+    if len(self_weather_history) > his_length:
+        show_self_weather_history = self_weather_history[-his_length:]
+    else:
+        show_self_weather_history = self_weather_history
+    return jsonify(show_self_weather_history)
 
 
 @app.route('/api/othersWeatherHistory')
 def get_others_weather_history():
-    return jsonify(list(others_weather_history))
+    if len(others_weather_history) > his_length:
+        show_others_weather_history = others_weather_history[-his_length:]
+    else:
+        show_others_weather_history = others_weather_history
+    return jsonify(list(show_others_weather_history))
 
 
 @app.route('/')

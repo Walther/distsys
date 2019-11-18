@@ -16,6 +16,7 @@ temp = None
 timestamp = None
 self_weather_history = []
 others_weather_history = []
+his_length = 10
 # Set retry options to maximum of 1
 requests_session = requests.Session()
 requests_adapter = requests.adapters.HTTPAdapter(max_retries=1)
@@ -43,7 +44,7 @@ def new_timestamp():
 # Updates the global variables temp and timestamp
 # Saves the recording to global variable self_weather_history
 def create_temp_update():
-    global temp, timestamp, self_weather_history
+    global temp, timestamp, self_weather_history, his_length
     temp = new_temperature()
     timestamp = new_timestamp()
     measurement = {
@@ -53,6 +54,8 @@ def create_temp_update():
         'timestamp': timestamp
     }
     self_weather_history.append(measurement)
+    if len(self_weather_history) > his_length:
+        self_weather_history = self_weather_history[-his_length:]
 
 
 # Tries to fetch the weather history from other nodes
@@ -61,7 +64,7 @@ def fetch_history_from_other_nodes():
     # NOTE: always fetches all of the history for all nodes
     # Could be optimized by adding logic to only fetch data newer than our
     # newest data point from the node
-    global others_weather_history
+    global others_weather_history, his_length
     for host in other_hosts:
         try:
             r = requests.get("http://" + host + "/api/selfWeatherHistory")
@@ -71,6 +74,8 @@ def fetch_history_from_other_nodes():
             # https://stackoverflow.com/a/11092590/3709997
             others_weather_history = list(
                 {v['uuid']: v for v in combined}.values())
+            if len(others_weather_history) > his_length:
+                others_weather_history = others_weather_history[-his_length:]
         except Exception as e:
             print("Could not load data from {} - {}".format(port, e))
 

@@ -66,7 +66,12 @@ def fetch_history_from_other_nodes():
     global others_weather_history, his_length
     for host in other_hosts:
         try:
+            start_time = datetime.datetime.now()
             r = requests.get("http://" + host + "/api/selfWeatherHistory")
+            end_time = datetime.datetime.now()
+            difference = end_time - start_time
+            with open("time_record.txt", "a") as f:
+                f.write(str(difference.seconds * 1000000 + difference.microseconds) + "\n")
             data = r.json()
             combined = others_weather_history + data
             # This deduplicates the history using the uuid as the key

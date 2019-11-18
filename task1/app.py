@@ -17,6 +17,7 @@ timestamp = None
 self_weather_history = []
 others_weather_history = []
 his_length = 10
+starting_time = datetime.datetime.now()
 # Set retry options to maximum of 1
 requests_session = requests.Session()
 requests_adapter = requests.adapters.HTTPAdapter(max_retries=1)
@@ -70,7 +71,7 @@ def fetch_history_from_other_nodes():
             r = requests.get("http://" + host + "/api/selfWeatherHistory")
             end_time = datetime.datetime.now()
             difference = end_time - start_time
-            with open("time_record.txt", "a") as f:
+            with open("{}:{}_record.txt".format(city, starting_time), "a") as f:
                 f.write(str(difference.seconds * 1000000 + difference.microseconds) + "\n")
             data = r.json()
             combined = others_weather_history + data

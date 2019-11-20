@@ -82,12 +82,13 @@ def fetch_history_from_other_nodes():
         except Exception as e:
             print("Could not load data from {} - {}".format(port, e))
 
-
+# Returns the latest temperature value of the node
 @app.route('/api/currentTemp')
 def get_current_temp():
     return jsonify(self_weather_history[-1])
 
-
+# Returns the previous temperature values of this node
+# Parameter his_length controls how many previous values are shown
 @app.route('/api/selfWeatherHistory')
 def get_self_weather_history():
     if len(self_weather_history) > his_length:
@@ -96,7 +97,8 @@ def get_self_weather_history():
         show_self_weather_history = self_weather_history
     return jsonify(show_self_weather_history)
 
-
+# Returns the temperature values of other nodes
+# Parameter his_length controls how many values are shown
 @app.route('/api/othersWeatherHistory')
 def get_others_weather_history():
     if len(others_weather_history) > his_length:

@@ -92,9 +92,9 @@ def get_current_temp():
 @app.route('/api/selfWeatherHistory')
 def get_self_weather_history():
     if len(self_weather_history) > his_length:
-        show_self_weather_history = self_weather_history[-his_length:]
+        show_self_weather_history = list(reversed(self_weather_history[-his_length:]))
     else:
-        show_self_weather_history = self_weather_history
+        show_self_weather_history = list(reversed(self_weather_history))
     return jsonify(show_self_weather_history)
 
 # Returns the temperature values of other nodes
@@ -102,9 +102,9 @@ def get_self_weather_history():
 @app.route('/api/othersWeatherHistory')
 def get_others_weather_history():
     if len(others_weather_history) > his_length:
-        show_others_weather_history = others_weather_history[-his_length:]
+        show_others_weather_history = list(reversed(others_weather_history[-his_length:]))
     else:
-        show_others_weather_history = others_weather_history
+        show_others_weather_history = list(reversed(others_weather_history))
     return jsonify(list(show_others_weather_history))
 
 

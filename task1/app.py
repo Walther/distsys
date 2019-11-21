@@ -18,8 +18,11 @@ port = int((os.environ['PORT']))
 other_hosts = (os.environ['OTHER_HOSTS']).split(",")
 temp = None
 timestamp = None
+# List of the temperature values of this node
 self_weather_history = []
+# List of the temperature values of other nodes
 others_weather_history = []
+# Determines how many temperature values are fetched from other nodes
 his_length = 10
 starting_time = datetime.datetime.now()
 logging.basicConfig(filename="logs/{}:{}.log".format(
@@ -139,11 +142,10 @@ def get_self_weather_history_full():
 def get_others_weather_history_full():
     return jsonify(list(others_weather_history))
 
-
+# Renders the index page
 @app.route('/')
 def index():
     return render_template("index.html")
-
 
 if __name__ == '__main__':
     # Run once at startup to set initial temperature, timestamp, and history

@@ -26,7 +26,7 @@ Run in two separate terminal windows:
 - `CITY=helsinki PORT=5001 OTHER_HOSTS=localhost:5002 python3 app.py`
 - `CITY=turku PORT=5002 OTHER_HOSTS=localhost:5001 python3 app.py`
 
-This will get you two nodes running at `localhost:5001` and `localhost:5002`, both polling each other for updates.
+This will get you two nodes running at `localhost:5001` and `localhost:5002` both polling each other for updates.
 
 ## TODO
 
@@ -35,7 +35,7 @@ This will get you two nodes running at `localhost:5001` and `localhost:5002`, bo
 - [x] Node has an `/api/selfWeatherHistory` that responds with a full history of its own temperature objects
 - [x] Node periodically checks for the `/api/selfWeatherHistory` of the other nodes, and merges those into its knowledge of other nodes' history
 - [x] Node has an `/api/othersWeatherHistory` that responds with a full history it has saved from other nodes
-- [ ] **IMPORTANT**: Deliverables, as defined by the exercise document!
+- [x] **IMPORTANT**: Deliverables, as defined by the exercise document!
 - [ ] Optional: Pretty display of data? Temperature graphs?
 - [ ] Optional: make the temperature adjust by small amounts, instead of jumping to random value
 - [ ] Complicated, optional: Using `othersWeatherHistory` for the data fetches between nodes, so that node A can get information about node C by asking node B. This could require more complicated deduplication, could be significant performance hit, etc.

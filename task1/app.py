@@ -6,6 +6,8 @@ import datetime
 import requests
 import logging
 import uuid
+import sys
+import json
 from flask import Flask, render_template, jsonify
 
 
@@ -20,7 +22,7 @@ self_weather_history = []
 others_weather_history = []
 his_length = 10
 starting_time = datetime.datetime.now()
-logging.basicConfig(filename="{}:{}.log".format(
+logging.basicConfig(filename="logs/{}:{}.log".format(
     city, starting_time), level=logging.INFO)
 # Set retry options to maximum of 1
 requests_session = requests.Session()
@@ -74,10 +76,17 @@ def fetch_history_from_other_nodes():
             r = requests.get("http://" + host + "/api/selfWeatherHistory")
             end_time = datetime.datetime.now()
             difference = end_time - start_time
-            with open("{}:{}_record.txt".format(city, starting_time), "a") as f:
-                f.write(str(difference.seconds * 1000000 +
-                            difference.microseconds) + "\n")
+            transfer_time = (difference.seconds * 1000000 +
+                             difference.microseconds)
             data = r.json()
+            transferred_bytes = sys.getsizeof(data)
+            logdata = json.dumps({
+                "transfer_time": transfer_time,
+                "transferred_bytes": transferred_bytes,
+                "transferred_from": host,
+            })
+            with open("logs/{}:{}_record.log".format(city, starting_time), "a") as f:
+                f.write(logdata + ",\n")
             combined = others_weather_history + data
             # This deduplicates the history using the uuid as the key
             # https://stackoverflow.com/a/11092590/3709997

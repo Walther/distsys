@@ -20,7 +20,8 @@ self_weather_history = []
 others_weather_history = []
 his_length = 10
 starting_time = datetime.datetime.now()
-logging.basicConfig(filename="{}:{}.log".format(city, starting_time), level=logging.INFO)
+logging.basicConfig(filename="{}:{}.log".format(
+    city, starting_time), level=logging.INFO)
 # Set retry options to maximum of 1
 requests_session = requests.Session()
 requests_adapter = requests.adapters.HTTPAdapter(max_retries=1)
@@ -58,7 +59,6 @@ def create_temp_update():
         'timestamp': timestamp
     }
     self_weather_history.append(measurement)
-    
 
 
 # Tries to fetch the weather history from other nodes
@@ -75,7 +75,8 @@ def fetch_history_from_other_nodes():
             end_time = datetime.datetime.now()
             difference = end_time - start_time
             with open("{}:{}_record.txt".format(city, starting_time), "a") as f:
-                f.write(str(difference.seconds * 1000000 + difference.microseconds) + "\n")
+                f.write(str(difference.seconds * 1000000 +
+                            difference.microseconds) + "\n")
             data = r.json()
             combined = others_weather_history + data
             # This deduplicates the history using the uuid as the key
@@ -95,7 +96,8 @@ def get_current_temp():
 @app.route('/api/selfWeatherHistory')
 def get_self_weather_history():
     if len(self_weather_history) > his_length:
-        show_self_weather_history = list(reversed(self_weather_history[-his_length:]))
+        show_self_weather_history = list(
+            reversed(self_weather_history[-his_length:]))
     else:
         show_self_weather_history = list(reversed(self_weather_history))
     return jsonify(show_self_weather_history)
@@ -105,10 +107,24 @@ def get_self_weather_history():
 @app.route('/api/othersWeatherHistory')
 def get_others_weather_history():
     if len(others_weather_history) > his_length:
-        show_others_weather_history = list(reversed(others_weather_history[-his_length:]))
+        show_others_weather_history = list(
+            reversed(others_weather_history[-his_length:]))
     else:
         show_others_weather_history = list(reversed(others_weather_history))
     return jsonify(list(show_others_weather_history))
+
+
+# Returns the previous temperature values of this node
+# Returns the full history, so response size grows over time
+@app.route('/api/selfWeatherHistoryFull')
+def get_self_weather_history_full():
+    return jsonify(self_weather_history)
+
+# Returns the temperature values of other nodes
+# Returns the full history, so response size grows over time
+@app.route('/api/othersWeatherHistoryFull')
+def get_others_weather_history_full():
+    return jsonify(list(others_weather_history))
 
 
 @app.route('/')

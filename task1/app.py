@@ -104,6 +104,8 @@ def get_current_temp():
 # Parameter his_length controls how many previous values are shown
 @app.route('/api/selfWeatherHistory')
 def get_self_weather_history():
+    # his_length is capped at 100 to bound the maximum size of messages between nodes
+    his_length = min(his_length, 100)
     if len(self_weather_history) > his_length:
         show_self_weather_history = list(
             reversed(self_weather_history[-his_length:]))
@@ -115,6 +117,8 @@ def get_self_weather_history():
 # Parameter his_length controls how many values are shown
 @app.route('/api/othersWeatherHistory')
 def get_others_weather_history():
+    # his_length is capped at 100 to bound the maximum size of messages between nodes
+    his_length = min(his_length, 100)
     if len(others_weather_history) > his_length:
         show_others_weather_history = list(
             reversed(others_weather_history[-his_length:]))

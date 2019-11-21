@@ -4,8 +4,10 @@ import random
 import time
 import datetime
 import requests
+import logging
 import uuid
 from flask import Flask, render_template, jsonify
+
 
 # Globals
 app = Flask(__name__)
@@ -18,6 +20,7 @@ self_weather_history = []
 others_weather_history = []
 his_length = 10
 starting_time = datetime.datetime.now()
+logging.basicConfig(filename="{}:{}.log".format(city, starting_time), level=logging.INFO)
 # Set retry options to maximum of 1
 requests_session = requests.Session()
 requests_adapter = requests.adapters.HTTPAdapter(max_retries=1)

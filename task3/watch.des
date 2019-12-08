@@ -1,0 +1,121 @@
+INITIALIZER:
+    from Tkinter import *
+    from DWatchGUI import DWatchGUI
+
+    root = Tk()
+    root.title("Watch")
+    g = DWatchGUI(root, eventhandler)
+
+    eventhandler.start()
+    root.mainloop()
+
+STATECHART:
+    A [DS]
+    B
+    C
+    EditTime
+    IncreaseTime
+    ButtomRightIsPressedFromA
+    ButtomRightIsPressedFromEditTime
+
+TRANSITION:
+    S: A
+    N: A
+    T: 1
+    O: print "update time"
+       g.increaseTimeByOne()
+       g.refreshTimeDisplay()
+
+TRANSITION:
+    S: A
+    N: B
+    E: lightOn
+    O: print "A -> B"
+       g.setIndiglo()
+
+TRANSITION:
+    S: B
+    N: A
+    E: lightOff
+    O: print "B -> A"
+       g.unsetIndiglo()
+
+TRANSITION:
+    S: A
+    N: C
+    E: changeMode
+    O: print "A -> C"
+       g.refreshChronoDisplay()
+
+TRANSITION:
+    S: C
+    N: A
+    E: changeMode
+    O: print "C -> A"
+       g.refreshTimeDisplay()
+
+TRANSITION:
+    S: A
+    N: ButtomRightIsPressedFromA
+    E: editTime
+    O: print "A -> buttomRightIsPressed"
+       
+
+TRANSITION:
+    S: ButtomRightIsPressedFromA
+    N: EditTime
+    T: 1.5
+    O: print "ButtomRightIsPressed -> EditTime"
+       g.startSelection()   
+
+TRANSITION:
+    S: EditTime
+    N: ButtomRightIsPressedFromEditTime
+    E: finishEdit
+    O: print "EditTime -> ButtomRightIsPressed"
+
+TRANSITION:
+    S: ButtomRightIsPressedFromEditTime
+    N: A
+    T: 2
+    O: print "ButtomRightIsPressed -> A Finished editing time"
+       g.stopSelection()
+
+
+
+TRANSITION:
+    S: EditTime
+    N: IncreaseTime
+    E: increase
+    O: print "EditTime -> IncreaseTime, Holding bottom left pressed"
+       g.increaseSelection()
+
+TRANSITION:
+    S: IncreaseTime
+    N: IncreaseTime
+    T: 0.3
+    O: print "IncreaseTime -> IncreaseTime, Increasing time"
+       g.increaseSelection()
+
+TRANSITION:
+    S: IncreaseTime
+    N: EditTime
+    E: stopInc
+    O: print "IncreaseTime -> EditTime, Released buttom left button"
+
+TRANSITION:
+    S: EditTime
+    N: EditTime
+    E: editTime
+    O: print "EditTime -> EditTime, going to next selection"
+       g.selectNext()       
+
+TRANSITION:
+    S: EditTime
+    N: A
+    T: 5
+    O: print "EditTime -> A, Leaving time editing"
+       g.stopSelection()
+
+
+

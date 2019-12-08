@@ -49,6 +49,15 @@ TRANSITION:
 
 TRANSITION:
     S: C
+    N: C
+    T: 1
+    O: print "update two times"
+       g.increaseTimeByOne()
+       g.increaseChronoByOne()
+       g.refreshChronoDisplay()
+
+TRANSITION:
+    S: C
     N: A
     E: changeMode
     O: print "C -> A"

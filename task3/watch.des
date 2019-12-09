@@ -25,7 +25,9 @@ STATECHART:
                 LightOn
                 LightWait
         Chrono[CS][DS]
-            ChronoInc[CS][DS]
+            ChronoPause[DS]
+            ChronoInc
+            ChronoReset
         AlarmEdit[CS][DS]
             NotInAlarmEdit[DS]
             GoingToAlarmEdit
@@ -114,20 +116,35 @@ TRANSITION:
        g.refreshTimeDisplay()
 
 
-
+##### Chrono #####
 
 TRANSITION:
-    S: C
-    N: ButtomRightIsPressedFromC
+    S: Main.Chrono.ChronoPause
+    N: Main.Chrono.ChronoInc
     E: initChrono
     O: print "start chrono"
 
 TRANSITION:
-    S: C
-    N: ButtomRightIsPressedFromC
+    S: Main.Chrono.ChronoInc
+    N: Main.Chrono.ChronoPause
     E: initChrono
-    O: print "start chrono"
+    O: print "pause chrono"
 
+TRANSITION:
+    S: Main.Chrono.ChronoPause
+    N: Main.Chrono.ChronoPause
+    E: resetChrono
+    O: print "reset chrono"
+       g.resetChrono()
+
+TRANSITION:
+    S: Main.Chrono.ChronoInc
+    N: Main.Chrono.ChronoInc
+    E: resetChrono
+    O: print "reset chrono"
+       g.resetChrono()
+
+##### End Chrono #####
 
 
 

@@ -15,12 +15,17 @@ INITIALIZER:
 STATECHART:
     Main[DS]
         TimeInc[CS][DS]
+            TimeInc[CS][DS]
         ChronoInc[CS][DS]
+            ChronoInc[CS][DS]
         Button[CS][DS]
             Display[DS]
                 Mode[CS][DS]
                     Time[DS]
                     Chrono
+                Operate[CS][DS]
+                    ChronoPause[DS]
+                    ChronoInc
                 Light[CS][DS]
                     LightOff[DS]
                     LightOn
@@ -39,16 +44,16 @@ STATECHART:
 ##### Increase ######
 
 TRANSITION:
-    S: Main.TimeInc
-    N: Main.TimeInc
+    S: Main.TimeInc.TimeInc
+    N: Main.TimeInc.TimeInc
     T: 1
     C: T_Inc_Flag==1
     O: print "update time"
        g.increaseTimeByOne()
 
 TRANSITION:
-    S: Main.ChronoInc
-    N: Main.ChronoInc
+    S: Main.ChronoInc.ChronoInc
+    N: Main.ChronoInc.ChronoInc
     T: 0.5
     C: C_Inc_Flag==1
     O: print "update chrono"
@@ -112,30 +117,32 @@ TRANSITION:
        g.refreshTimeDisplay()
 
 
-
+##### Chrono Operation #####
 
 TRANSITION:
-    S: Main.Chrono.ChronoPause
-    N: Main.Chrono.ChronoInc
+    S: Main.Button.Display.Operate.ChronoPause
+    N: Main.Button.Display.Operate.ChronoInc
     E: initChrono
     O: print "start chrono"
+       C_Inc_Flag = 1
 
 TRANSITION:
-    S: Main.Chrono.ChronoInc
-    N: Main.Chrono.ChronoPause
+    S: Main.Button.Display.Operate.ChronoInc
+    N: Main.Button.Display.Operate.ChronoPause
     E: initChrono
     O: print "pause chrono"
+       C_Inc_Flag = 0
 
 TRANSITION:
-    S: Main.Chrono.ChronoPause
-    N: Main.Chrono.ChronoPause
+    S: Main.Button.Display.Operate.ChronoPause
+    N: Main.Button.Display.Operate.ChronoPause
     E: resetChrono
     O: print "reset chrono"
        g.resetChrono()
 
 TRANSITION:
-    S: Main.Chrono.ChronoInc
-    N: Main.Chrono.ChronoInc
+    S: Main.Button.Display.Operate.ChronoInc
+    N: Main.Button.Display.Operate.ChronoInc
     E: resetChrono
     O: print "reset chrono"
        g.resetChrono()

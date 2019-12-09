@@ -23,6 +23,10 @@ STATECHART:
                 LightWait
         Chrono[CS][DS]
             ChronoInc[CS][DS]
+        AlarmEdit[CS][DS]
+            NotInAlarmEdit[DS]
+            GoingToAlarmEdit
+            InAlarmEdit
 
     EditTime
     IncreaseTime
@@ -182,6 +186,27 @@ TRANSITION:
     T: 5
     O: print "EditTime -> A, Leaving time editing"
        g.stopSelection()
+
+
+TRANSITION:
+    S: Main.Time.TimeInc
+    N: Main.AlarmEdit.GoingAlarmToEdit
+    E: setAlarm
+    O: print "Going to alarm edit in 1.5 sec"
+
+TRANSITION:
+    S: Main.AlarmEdit.GoingToEdit
+    N: Main.Time.TimeInc
+    E: onoff
+    O: print "Alarm set"
+       g.setAlarm()
+
+TRANSITION:
+    S: Main.AlarmEdit.GoingToAlarmEdit
+    N: Main.AlarmEdit.InAlarmEdit
+    T: 1.5
+    O: print "Going to alarm edit now"
+       g.startSelection()
 
 
 

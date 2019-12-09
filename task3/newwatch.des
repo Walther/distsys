@@ -2,7 +2,11 @@ INITIALIZER:
     from Tkinter import *
     from DWatchGUI import DWatchGUI
 
+    # Chrono Flag
     C_Inc_Flag = 0
+    C_Button_Flag = 0
+
+    # Time Flag
     T_Inc_Flag = 1
 
     root = Tk()
@@ -108,6 +112,7 @@ TRANSITION:
     E: changeMode
     O: print "Time -> Chrono"
        g.refreshChronoDisplay()
+       C_Button_Flag = 1
 
 TRANSITION:
     S: Main.Button.Display.Mode.Chrono
@@ -115,6 +120,7 @@ TRANSITION:
     E: changeMode
     O: print "Chrono -> Time"
        g.refreshTimeDisplay()
+       C_Button_Flag = 0
 
 
 ##### Chrono Operation #####
@@ -123,6 +129,7 @@ TRANSITION:
     S: Main.Button.Display.Operate.ChronoPause
     N: Main.Button.Display.Operate.ChronoInc
     E: initChrono
+    C: C_Button_Flag == 1
     O: print "start chrono"
        C_Inc_Flag = 1
 
@@ -130,6 +137,7 @@ TRANSITION:
     S: Main.Button.Display.Operate.ChronoInc
     N: Main.Button.Display.Operate.ChronoPause
     E: initChrono
+    C: C_Button_Flag == 1
     O: print "pause chrono"
        C_Inc_Flag = 0
 
@@ -137,6 +145,7 @@ TRANSITION:
     S: Main.Button.Display.Operate.ChronoPause
     N: Main.Button.Display.Operate.ChronoPause
     E: resetChrono
+    C: C_Button_Flag == 1
     O: print "reset chrono"
        g.resetChrono()
 
@@ -144,5 +153,6 @@ TRANSITION:
     S: Main.Button.Display.Operate.ChronoInc
     N: Main.Button.Display.Operate.ChronoInc
     E: resetChrono
+    C: C_Button_Flag == 1
     O: print "reset chrono"
        g.resetChrono()

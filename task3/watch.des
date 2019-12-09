@@ -1,3 +1,4 @@
+
 INITIALIZER:
     from Tkinter import *
     from DWatchGUI import DWatchGUI
@@ -16,6 +17,8 @@ STATECHART:
         Display[CS][DS]
             Mode[CS][DS]
                 Time[DS]
+                    UpdateScreen[DS]
+                    DoNotUpdateScreen
                 Chrono
             Light[CS][DS]
                 LightOff[DS]
@@ -27,13 +30,18 @@ STATECHART:
             NotInAlarmEdit[DS]
             GoingToAlarmEdit
             InAlarmEdit
+        TimeEdit[CS][DS]
+            NotInTimeEdit[DS]
+            GoingToTimeEdit
+            InTimeEdit
+            TurningOffTimeEdit   
 
-    EditTime
-    IncreaseTime
-    ButtomRightIsPressedFromA
-    ButtomRightIsPressedFromEditTime
+    #EditTime
+    #IncreaseTime
+    #ButtomRightIsPressedFromA
+    #ButtomRightIsPressedFromEditTime
     
-    ButtomRightIsPressedFromC
+    #ButtomRightIsPressedFromC
     
 
 TRANSITION:
@@ -53,8 +61,8 @@ TRANSITION:
        g.increaseChronoByOne()
 
 TRANSITION:
-    S: Main.Display.Mode.Time
-    N: Main.Display.Mode.Time
+    S: Main.Display.Mode.Time.UpdateScreen
+    N: Main.Display.Mode.Time.UpdateScreen
     T: 1
     O: g.refreshTimeDisplay()
        g.refreshDateDisplay()
@@ -125,31 +133,54 @@ TRANSITION:
 
 
 TRANSITION:
-    S: A
-    N: ButtomRightIsPressedFromA
+    S: Main.TimeEdit.NotInTimeEdit
+    N: Main.TimeEdit.GoingToTimeEdit
     E: editTime
-    O: print "A -> buttomRightIsPressed"
-       
+    O: print "Going to time edit in 1.5 seconds"
 
 TRANSITION:
-    S: ButtomRightIsPressedFromA
-    N: EditTime
+    S: Main.TimeEdit.GoingToTimeEdit
+    N: Main.TimeEdit.NotInTimeEdit
+    E: released
+    O: print "Not going to time edit"
+
+TRANSITION:
+    S: Main.TimeEdit.GoingToTimeEdit
+    N: Main.TimeEdit.InTimeEdit
     T: 1.5
-    O: print "ButtomRightIsPressed -> EditTime"
-       g.startSelection()   
+    O: print "Going to time edit now"
+       g.startSelection()
+
+#TRANSITION:
+#    S: Main.TimeEdit.InTimeEdit
+#    N: Main.Display.Mode.Time.DoNotUpdateScreen
+#    T: 0.5
+#    O: print "No need to update display"
 
 TRANSITION:
-    S: EditTime
-    N: ButtomRightIsPressedFromEditTime
+    S: Main.TimeEdit.InTimeEdit
+    N: Main.TimeEdit.TurningOffTimeEdit
     E: finishEdit
-    O: print "EditTime -> ButtomRightIsPressed"
+    O: print "Finishing editing time in 2 seconds"
 
 TRANSITION:
-    S: ButtomRightIsPressedFromEditTime
-    N: A
+    S: Main.TimeEdit.TurningOffTimeEdit
+    N: Main.TimeEdit.InTimeEdit
+    E: released
+    O: print "Staying in time edit"
+
+TRANSITION:
+    S: Main.TimeEdit.TurningOffTimeEdit
+    N: Main.TimeEdit.NotInTimeEdit
     T: 2
-    O: print "ButtomRightIsPressed -> A Finished editing time"
+    O: print "Turning off time edit"
        g.stopSelection()
+
+#TRANSITION:
+#    S: Main.Display.Mode.Time.DoNotUpdateScreen
+#    N: Main.Display.Mode.Time.UpdateScreen
+#    E: finishEdit
+#    O: print "Update time display every second"
 
 
 
@@ -190,12 +221,12 @@ TRANSITION:
 
 TRANSITION:
     S: Main.Time.TimeInc
-    N: Main.AlarmEdit.GoingAlarmToEdit
+    N: Main.AlarmEdit.GoingToAlarmEdit
     E: setAlarm
     O: print "Going to alarm edit in 1.5 sec"
 
 TRANSITION:
-    S: Main.AlarmEdit.GoingToEdit
+    S: Main.AlarmEdit.GoingToAlarmEdit
     N: Main.Time.TimeInc
     E: onoff
     O: print "Alarm set"
@@ -208,5 +239,12 @@ TRANSITION:
     O: print "Going to alarm edit now"
        g.startSelection()
 
+#TRANSITION:
+#    S: Main.AlarmEdit.InAlarmEdit
+#    N: Main.Display.Mode.Time.DoNotUpdateScreen
+#    T: 0.5
+#    O: print "No need to update display"
 
-
+#TRANSITION:
+#    S: Main.AlarmEdit.InAlarmEdit
+#    N: 

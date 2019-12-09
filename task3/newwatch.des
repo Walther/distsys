@@ -1,0 +1,141 @@
+INITIALIZER:
+    from Tkinter import *
+    from DWatchGUI import DWatchGUI
+
+    C_Inc_Flag = 0
+    T_Inc_Flag = 1
+
+    root = Tk()
+    root.title("Watch")
+    g = DWatchGUI(root, eventhandler)
+
+    eventhandler.start()
+    root.mainloop()
+
+STATECHART:
+    Main[DS]
+        TimeInc[CS][DS]
+        ChronoInc[CS][DS]
+        Button[CS][DS]
+            Display[DS]
+                Mode[CS][DS]
+                    Time[DS]
+                    Chrono
+                Light[CS][DS]
+                    LightOff[DS]
+                    LightOn
+                    LightWait
+            AlarmEdit
+                NotInAlarmEdit[DS]
+                GoingToAlarmEdit
+                InAlarmEdit
+            TimeEdit
+                NotInTimeEdit[DS]
+                GoingToTimeEdit
+                InTimeEdit
+                TurningOffTimeEdit 
+    
+
+##### Increase ######
+
+TRANSITION:
+    S: Main.TimeInc
+    N: Main.TimeInc
+    T: 1
+    C: T_Inc_Flag==1
+    O: print "update time"
+       g.increaseTimeByOne()
+
+TRANSITION:
+    S: Main.ChronoInc
+    N: Main.ChronoInc
+    T: 0.5
+    C: C_Inc_Flag==1
+    O: print "update chrono"
+       g.increaseChronoByOne()
+
+
+##### Display #####
+
+TRANSITION:
+    S: Main.Button.Display.Mode.Time
+    N: Main.Button.Display.Mode.Time
+    T: 1
+    O: g.refreshTimeDisplay()
+       g.refreshDateDisplay()
+
+TRANSITION:
+    S: Main.Button.Display.Mode.Chrono
+    N: Main.Button.Display.Mode.Chrono
+    T: 0.5
+    O: g.refreshChronoDisplay()
+       g.refreshDateDisplay()
+
+
+##### Light #####
+
+TRANSITION:
+    S: Main.Button.Display.Light.LightOff
+    N: Main.Button.Display.Light.LightOn
+    E: lightOn
+    O: print "LightOff -> LightOn"
+       g.setIndiglo()
+
+TRANSITION:
+    S: Main.Button.Display.Light.LightOn
+    N: Main.Button.Display.Light.LightWait
+    E: lightOff
+    O: print "Off in 2 sec"
+
+TRANSITION:
+    S: Main.Button.Display.Light.LightWait
+    N: Main.Button.Display.Light.LightOff
+    T: 2 [OTT]
+    O: print "LightOn -> lightOff"
+       g.unsetIndiglo()
+
+
+##### Switch between Time & Chrono #####
+
+TRANSITION:
+    S: Main.Button.Display.Mode.Time
+    N: Main.Button.Display.Mode.Chrono
+    E: changeMode
+    O: print "Time -> Chrono"
+       g.refreshChronoDisplay()
+
+TRANSITION:
+    S: Main.Button.Display.Mode.Chrono
+    N: Main.Button.Display.Mode.Time
+    E: changeMode
+    O: print "Chrono -> Time"
+       g.refreshTimeDisplay()
+
+
+
+
+TRANSITION:
+    S: Main.Chrono.ChronoPause
+    N: Main.Chrono.ChronoInc
+    E: initChrono
+    O: print "start chrono"
+
+TRANSITION:
+    S: Main.Chrono.ChronoInc
+    N: Main.Chrono.ChronoPause
+    E: initChrono
+    O: print "pause chrono"
+
+TRANSITION:
+    S: Main.Chrono.ChronoPause
+    N: Main.Chrono.ChronoPause
+    E: resetChrono
+    O: print "reset chrono"
+       g.resetChrono()
+
+TRANSITION:
+    S: Main.Chrono.ChronoInc
+    N: Main.Chrono.ChronoInc
+    E: resetChrono
+    O: print "reset chrono"
+       g.resetChrono()

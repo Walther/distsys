@@ -76,7 +76,7 @@ class DWatchGUI:
  
   def increaseTimeByOne(self):
     self.GUI.increaseTimeByOne()
-    self.refreshTimeDisplay()    
+    # self.refreshTimeDisplay()    
  
   def resetChrono(self):
     self.GUI.resetChrono()

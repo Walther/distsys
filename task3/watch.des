@@ -10,58 +10,115 @@ INITIALIZER:
     root.mainloop()
 
 STATECHART:
-    A [DS]
-    B
-    C
+    Main [DS]
+        Time[CS][DS]
+            TimeInc[CS][DS]
+        Display[CS][DS]
+            Mode[CS][DS]
+                Time[DS]
+                Chrono
+            Light[CS][DS]
+                LightOff[DS]
+                LightOn
+                LightWait
+        Chrono[CS][DS]
+            ChronoInc[CS][DS]
+
     EditTime
     IncreaseTime
     ButtomRightIsPressedFromA
     ButtomRightIsPressedFromEditTime
+    
+    ButtomRightIsPressedFromC
+    
 
 TRANSITION:
-    S: A
-    N: A
+    S: Main.Time.TimeInc
+    N: Main.Time.TimeInc
     T: 1
     O: print "update time"
        g.increaseTimeByOne()
-       g.refreshTimeDisplay()
+       #g.refreshTimeDisplay()
+       #g.refreshDateDisplay()
 
 TRANSITION:
-    S: A
-    N: B
+    S: Main.Chrono.ChronoInc
+    N: Main.Chrono.ChronoInc
+    T: 0.5
+    O: print "update chrono"
+       g.increaseChronoByOne()
+
+TRANSITION:
+    S: Main.Display.Mode.Time
+    N: Main.Display.Mode.Time
+    T: 1
+    O: g.refreshTimeDisplay()
+       g.refreshDateDisplay()
+
+TRANSITION:
+    S: Main.Display.Mode.Chrono
+    N: Main.Display.Mode.Chrono
+    T: 0.5
+    O: g.refreshChronoDisplay()
+       g.refreshDateDisplay()
+
+
+
+
+
+TRANSITION:
+    S: Main.Display.Light.LightOff
+    N: Main.Display.Light.LightOn
     E: lightOn
-    O: print "A -> B"
+    O: print "LightOff -> LightOn"
        g.setIndiglo()
 
 TRANSITION:
-    S: B
-    N: A
+    S: Main.Display.Light.LightOn
+    N: Main.Display.Light.LightWait
     E: lightOff
-    O: print "B -> A"
+    O: print "Off in 2 sec"
+
+TRANSITION:
+    S: Main.Display.Light.LightWait
+    N: Main.Display.Light.LightOff
+    T: 2 [OTT]
+    O: print "LightOn -> lightOff"
        g.unsetIndiglo()
 
+
 TRANSITION:
-    S: A
-    N: C
+    S: Main.Display.Mode.Time
+    N: Main.Display.Mode.Chrono
     E: changeMode
-    O: print "A -> C"
+    O: print "Time -> Chrono"
        g.refreshChronoDisplay()
 
 TRANSITION:
-    S: C
-    N: C
-    T: 1
-    O: print "update two times"
-       g.increaseTimeByOne()
-       g.increaseChronoByOne()
-       g.refreshChronoDisplay()
-
-TRANSITION:
-    S: C
-    N: A
+    S: Main.Display.Mode.Chrono
+    N: Main.Display.Mode.Time
     E: changeMode
-    O: print "C -> A"
+    O: print "Chrono -> Time"
        g.refreshTimeDisplay()
+
+
+
+
+TRANSITION:
+    S: C
+    N: ButtomRightIsPressedFromC
+    E: initChrono
+    O: print "start chrono"
+
+TRANSITION:
+    S: C
+    N: ButtomRightIsPressedFromC
+    E: initChrono
+    O: print "start chrono"
+
+
+
+
 
 TRANSITION:
     S: A

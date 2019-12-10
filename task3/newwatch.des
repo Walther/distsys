@@ -34,6 +34,11 @@ STATECHART:
                     LightOff[DS]
                     LightOn
                     LightWait
+                AlarmLight[CS][DS]
+                    AlarmOff[DS]
+                    AlarmOn
+                        LightOff[DS]
+                        LightOn
             AlarmEdit
                 NotInAlarmEdit[DS]
                 GoingToAlarmEdit
@@ -252,7 +257,7 @@ TRANSITION:
     S: Main.Button.AlarmEdit.GoingToAlarmEdit
     N: Main.Button.Display.Mode.Time
     E: onoff
-    O: print "Alarm set"
+    O: print "Alarm set at " + str(g.getAlarm()[0]) + ":" + str(g.getAlarm()[1]) + ":" + str(g.getAlarm()[2])
        g.setAlarm()
 
 TRANSITION:
@@ -315,3 +320,66 @@ TRANSITION:
     E: editTime
     O: print "Going to next selection"
        g.selectNext() 
+
+
+### Alarm function
+
+TRANSITION:
+    S: Main.Button.Display.Mode.Time
+    N: Main.Button.Display.AlarmLight.AlarmOn.LightOn
+    T: 1
+    C: g.checkTime() == True
+    O: print "alarm true"
+
+TRANSITION:
+    S: Main.Button.Display.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Time
+    T: 4
+    O: print "Turn off alarm after 4 seconds"
+       g.unsetIndiglo()
+
+TRANSITION:
+    S: Main.Button.Display.AlarmLight.AlarmOn.LightOn
+    N: Main.Button.Display.AlarmLight.AlarmOn.LightOff
+    T: 0.5
+    O: print "light on"
+       g.setIndiglo()
+
+TRANSITION:
+    S: Main.Button.Display.AlarmLight.AlarmOn.LightOff
+    N: Main.Button.Display.AlarmLight.AlarmOn.LightOn
+    T: 0.5
+    O: print "light off"
+       g.unsetIndiglo()
+
+# Turn off alarm by pressing bottom right
+TRANSITION:
+    S: Main.Button.Display.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Time
+    E: released
+    O: print "alarm off"
+       g.unsetIndiglo()
+
+# Turn off alarm by pressing bottom left
+TRANSITION:
+    S: Main.Button.Display.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Time
+    E: onoff
+    O: print "alarm off"
+       g.unsetIndiglo()
+
+# Turn off alarm by pressing top left
+TRANSITION:
+    S: Main.Button.Display.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Time
+    E: changeMode
+    O: print "alarm off"
+       g.unsetIndiglo()
+
+# Turn off alarm by pressing top right
+TRANSITION:
+    S: Main.Button.Display.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Time
+    E: lighton
+    O: print "alarm off"
+       g.unsetIndiglo()

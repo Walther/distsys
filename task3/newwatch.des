@@ -5,9 +5,11 @@ INITIALIZER:
     # Chrono Flag
     C_Inc_Flag = 0
     C_Button_Flag = 0
+    C_Display_Flag = 0
 
     # Time Flag
     T_Inc_Flag = 1
+    T_Display_Flag = 1
 
     root = Tk()
     root.title("Watch")
@@ -123,6 +125,8 @@ TRANSITION:
     O: print "Time -> Chrono"
        g.refreshChronoDisplay()
        C_Button_Flag = 1
+       C_Display_Flag = 1
+       T_Display_Flag = 0
 
 TRANSITION:
     S: Main.Button.Display.Mode.Chrono
@@ -131,6 +135,8 @@ TRANSITION:
     O: print "Chrono -> Time"
        g.refreshTimeDisplay()
        C_Button_Flag = 0
+       C_Display_Flag = 0
+       T_Display_Flag = 1
 
 
 ##### Chrono Operation #####
@@ -362,31 +368,69 @@ TRANSITION:
 # Turn off alarm by pressing bottom right
 TRANSITION:
     S: Main.Button.AlarmLight.AlarmOn
-    N: Main.Button.Display.Mode
+    N: Main.Button.Display.Mode.Time
     E: released
-    O: print "alarm off"
+    C: T_Display_Flag == 1
+    O: print "alarm off, back to Time mode"
+       g.unsetIndiglo()
+
+TRANSITION:
+    S: Main.Button.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Chrono
+    E: released
+    C: C_Display_Flag == 1
+    O: print "alarm off, back to Chrono mode"
        g.unsetIndiglo()
 
 # Turn off alarm by pressing bottom left
 TRANSITION:
     S: Main.Button.AlarmLight.AlarmOn
-    N: Main.Button.Display.Mode
+    N: Main.Button.Display.Mode.Time
     E: onoff
-    O: print "alarm off"
+    C: T_Display_Flag == 1
+    O: print "alarm off, back to Time mode"
+       g.unsetIndiglo()
+
+TRANSITION:
+    S: Main.Button.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Chrono
+    E: onoff
+    C: C_Display_Flag == 1
+    O: print "alarm off, back to Chrono mode"
+       g.unsetIndiglo()
+
+
+
+# Turn off alarm by pressing top right
+TRANSITION:
+    S: Main.Button.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Time
+    E: lighton
+    C: T_Display_Flag == 1
+    O: print "alarm off, back to Time mode"
+       g.unsetIndiglo()
+
+TRANSITION:
+    S: Main.Button.AlarmLight.AlarmOn
+    N: Main.Button.Display.Mode.Chrono
+    E: lighton
+    C: C_Display_Flag == 1
+    O: print "alarm off, back to Chrono mode"
        g.unsetIndiglo()
 
 # Turn off alarm by pressing top left
 TRANSITION:
     S: Main.Button.AlarmLight.AlarmOn
-    N: Main.Button.Display.Mode
+    N: Main.Button.Display.Mode.Time
     E: changeMode
-    O: print "alarm off"
+    C: T_Display_Flag == 1
+    O: print "alarm off, back to Time mode"
        g.unsetIndiglo()
 
-# Turn off alarm by pressing top right
 TRANSITION:
     S: Main.Button.AlarmLight.AlarmOn
-    N: Main.Button.Display.Mode
-    E: lighton
-    O: print "alarm off"
+    N: Main.Button.Display.Mode.Chrono
+    E: changeMode
+    C: C_Display_Flag == 1
+    O: print "alarm off, back to Chrono mode"
        g.unsetIndiglo()

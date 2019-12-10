@@ -260,13 +260,14 @@ TRANSITION:
     N: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
     T: 1.5
     O: print "Going to alarm edit now"
+       g.refreshAlarmDisplay()
        g.startSelection()
 
 TRANSITION:
     S: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
     N: Main.Button.AlarmEdit.TurningOffAlarmEdit
     E: finishEdit
-    O: print "Finishing editing alarm in 2 seconds"
+    O: print "Turning off alarm edit in 2 seconds"
 
 TRANSITION:
     S: Main.Button.AlarmEdit.TurningOffAlarmEdit
@@ -296,21 +297,21 @@ TRANSITION:
        g.increaseSelection()
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InAlarmEdit.IncreasingTime
-    N: Main.Button.TimeEdit.InAlarmEdit.IncreasingTime
+    S: Main.Button.AlarmEdit.InAlarmEdit.IncreasingTime
+    N: Main.Button.AlarmEdit.InAlarmEdit.IncreasingTime
     T: 0.3
     O: print "Increasing time"
        g.increaseSelection()
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InAlarmEdit.IncreasingTime
-    N: Main.Button.TimeEdit.InAlarmEdit.NotIncreasingTime
+    S: Main.Button.AlarmEdit.InAlarmEdit.IncreasingTime
+    N: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
     E: stopInc
     O: print "Released bottom left button, not increasing time"
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InAlarmEdit.NotIncreasingTime
-    N: Main.Button.TimeEdit.InAlarmEdit.NotIncreasingTime
+    S: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
+    N: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
     E: editTime
     O: print "Going to next selection"
        g.selectNext() 

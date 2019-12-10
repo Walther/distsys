@@ -46,13 +46,13 @@ STATECHART:
                     NotIncreasingTime[DS]
                     IncreasingTime
                 TurningOffAlarmEdit
-            TimeEdit
-                NotInTimeEdit[DS]
-                GoingToTimeEdit
-                InTimeEdit
-                    NotIncreasingTime[DS]
-                    IncreasingTime
-                TurningOffTimeEdit 
+    TimeEdit
+        NotInTimeEdit[DS]
+        GoingToTimeEdit
+        InTimeEdit
+            NotIncreasingTime[DS]
+            IncreasingTime
+        TurningOffTimeEdit 
     
 
 ##### Increase ######
@@ -172,72 +172,72 @@ TRANSITION:
 
 TRANSITION:
     S: Main.Button.Display.Mode.Time
-    N: Main.Button.TimeEdit.GoingToTimeEdit
+    N: TimeEdit.GoingToTimeEdit
     E: editTime
     O: print "Going to time edit in 1.5 seconds"
 
 TRANSITION:
-    S: Main.Button.TimeEdit.GoingToTimeEdit
-    N: Main.Button.TimeEdit.NotInTimeEdit
+    S: TimeEdit.GoingToTimeEdit
+    N: Main.Button.Display.Mode.Time
     E: released
     O: print "Not going to time edit"
 
 TRANSITION:
-    S: Main.Button.TimeEdit.GoingToTimeEdit
-    N: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    S: TimeEdit.GoingToTimeEdit
+    N: TimeEdit.InTimeEdit.NotIncreasingTime
     T: 1.5
     O: print "Going to time edit now"
        g.startSelection()
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
-    N: Main.Button.TimeEdit.TurningOffTimeEdit
+    S: TimeEdit.InTimeEdit.NotIncreasingTime
+    N: TimeEdit.TurningOffTimeEdit
     E: finishEdit
     O: print "Finishing editing time in 2 seconds"
 
 TRANSITION:
-    S: Main.Button.TimeEdit.TurningOffTimeEdit
-    N: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    S: TimeEdit.TurningOffTimeEdit
+    N: TimeEdit.InTimeEdit.NotIncreasingTime
     E: released
     O: print "Staying in time edit"
 
 TRANSITION:
-    S: Main.Button.TimeEdit.TurningOffTimeEdit
+    S: TimeEdit.TurningOffTimeEdit
     N: Main.Button.Display.Mode.Time
     T: 2
     O: print "Turning off time edit"
        g.stopSelection()
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    S: TimeEdit.InTimeEdit.NotIncreasingTime
     N: Main.Button.Display.Mode.Time
     T: 5
     O: print "Turn of time edit due to inactivity"
        g.stopSelection()
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
-    N: Main.Button.TimeEdit.InTimeEdit.IncreasingTime
+    S: TimeEdit.InTimeEdit.NotIncreasingTime
+    N: TimeEdit.InTimeEdit.IncreasingTime
     E: increase
     O: print "Holding bottom left pressed, increasing time"
        g.increaseSelection()
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InTimeEdit.IncreasingTime
-    N: Main.Button.TimeEdit.InTimeEdit.IncreasingTime
+    S: TimeEdit.InTimeEdit.IncreasingTime
+    N: TimeEdit.InTimeEdit.IncreasingTime
     T: 0.3
     O: print "Increasing time"
        g.increaseSelection()
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InTimeEdit.IncreasingTime
-    N: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    S: TimeEdit.InTimeEdit.IncreasingTime
+    N: TimeEdit.InTimeEdit.NotIncreasingTime
     E: stopInc
     O: print "Released buttom left button, not increasing time"
 
 TRANSITION:
-    S: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
-    N: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    S: TimeEdit.InTimeEdit.NotIncreasingTime
+    N: TimeEdit.InTimeEdit.NotIncreasingTime
     E: editTime
     O: print "Going to next selection"
        g.selectNext()

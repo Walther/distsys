@@ -38,10 +38,15 @@ STATECHART:
                 NotInAlarmEdit[DS]
                 GoingToAlarmEdit
                 InAlarmEdit
+                    NotIncreasingTime[DS]
+                    IncreasingTime
+                TurningOffAlarmEdit
             TimeEdit
                 NotInTimeEdit[DS]
                 GoingToTimeEdit
                 InTimeEdit
+                    NotIncreasingTime[DS]
+                    IncreasingTime
                 TurningOffTimeEdit 
     
 
@@ -156,3 +161,156 @@ TRANSITION:
     C: C_Button_Flag == 1
     O: print "reset chrono"
        g.resetChrono()
+
+
+### Editing time
+
+TRANSITION:
+    S: Main.Button.Display.Mode.Time
+    N: Main.Button.TimeEdit.GoingToTimeEdit
+    E: editTime
+    O: print "Going to time edit in 1.5 seconds"
+
+TRANSITION:
+    S: Main.Button.TimeEdit.GoingToTimeEdit
+    N: Main.Button.TimeEdit.NotInTimeEdit
+    E: released
+    O: print "Not going to time edit"
+
+TRANSITION:
+    S: Main.Button.TimeEdit.GoingToTimeEdit
+    N: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    T: 1.5
+    O: print "Going to time edit now"
+       g.startSelection()
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    N: Main.Button.TimeEdit.TurningOffTimeEdit
+    E: finishEdit
+    O: print "Finishing editing time in 2 seconds"
+
+TRANSITION:
+    S: Main.Button.TimeEdit.TurningOffTimeEdit
+    N: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    E: released
+    O: print "Staying in time edit"
+
+TRANSITION:
+    S: Main.Button.TimeEdit.TurningOffTimeEdit
+    N: Main.Button.Display.Mode.Time
+    T: 2
+    O: print "Turning off time edit"
+       g.stopSelection()
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    N: Main.Button.Display.Mode.Time
+    T: 5
+    O: print "Turn of time edit due to inactivity"
+       g.stopSelection()
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    N: Main.Button.TimeEdit.InTimeEdit.IncreasingTime
+    E: increase
+    O: print "Holding bottom left pressed, increasing time"
+       g.increaseSelection()
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InTimeEdit.IncreasingTime
+    N: Main.Button.TimeEdit.InTimeEdit.IncreasingTime
+    T: 0.3
+    O: print "Increasing time"
+       g.increaseSelection()
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InTimeEdit.IncreasingTime
+    N: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    E: stopInc
+    O: print "Released buttom left button, not increasing time"
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    N: Main.Button.TimeEdit.InTimeEdit.NotIncreasingTime
+    E: editTime
+    O: print "Going to next selection"
+       g.selectNext()
+
+
+
+
+### Alarm setting and editing
+
+TRANSITION:
+    S: Main.Button.Display.Mode.Time
+    N: Main.Button.AlarmEdit.GoingToAlarmEdit
+    E: setAlarm
+    O: print "Going to alarm edit in 1.5 sec"
+
+TRANSITION:
+    S: Main.Button.AlarmEdit.GoingToAlarmEdit
+    N: Main.Button.Display.Mode.Time
+    E: onoff
+    O: print "Alarm set"
+       g.setAlarm()
+
+TRANSITION:
+    S: Main.Button.AlarmEdit.GoingToAlarmEdit
+    N: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
+    T: 1.5
+    O: print "Going to alarm edit now"
+       g.startSelection()
+
+TRANSITION:
+    S: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
+    N: Main.Button.AlarmEdit.TurningOffAlarmEdit
+    E: finishEdit
+    O: print "Finishing editing alarm in 2 seconds"
+
+TRANSITION:
+    S: Main.Button.AlarmEdit.TurningOffAlarmEdit
+    N: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
+    E: released
+    O: print "Staying in alarm edit"
+
+TRANSITION:
+    S: Main.Button.AlarmEdit.TurningOffAlarmEdit
+    N: Main.Button.Display.Mode.Time
+    T: 2
+    O: print "Turning off alarm edit"
+       g.stopSelection()
+
+TRANSITION:
+    S: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
+    N: Main.Button.Display.Mode.Time
+    T: 5
+    O: print "Turn of alarm edit due to inactivity"
+       g.stopSelection()
+
+TRANSITION:
+    S: Main.Button.AlarmEdit.InAlarmEdit.NotIncreasingTime
+    N: Main.Button.AlarmEdit.InAlarmEdit.IncreasingTime
+    E: increase
+    O: print "Holding bottom left pressed, increasing time"
+       g.increaseSelection()
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InAlarmEdit.IncreasingTime
+    N: Main.Button.TimeEdit.InAlarmEdit.IncreasingTime
+    T: 0.3
+    O: print "Increasing time"
+       g.increaseSelection()
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InAlarmEdit.IncreasingTime
+    N: Main.Button.TimeEdit.InAlarmEdit.NotIncreasingTime
+    E: stopInc
+    O: print "Released bottom left button, not increasing time"
+
+TRANSITION:
+    S: Main.Button.TimeEdit.InAlarmEdit.NotIncreasingTime
+    N: Main.Button.TimeEdit.InAlarmEdit.NotIncreasingTime
+    E: editTime
+    O: print "Going to next selection"
+       g.selectNext() 
